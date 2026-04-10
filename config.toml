@@ -1,0 +1,55 @@
+[jira]
+base_url = "https://jira.example.com"
+projects = ["PROJ"]
+issue_types = ["Bug", "Story", "Task"]
+statuses = []          # empty = all statuses
+labels = []            # empty = all labels
+max_results = 100      # page size (Jira Server max is 100)
+request_delay_seconds = 0.5
+
+[time_range]
+updated_after = "2024-01-01"
+updated_before = ""    # empty = no upper bound (up to now)
+
+# Custom field IDs — find these via GET /rest/api/2/field on your Jira instance
+[custom_fields]
+sprint             = "customfield_10020"
+story_points       = "customfield_10016"
+ai_assisted_effort = "customfield_10100"  # replace with actual field ID
+ai_usage_level     = "customfield_10101"  # replace with actual field ID
+
+[output]
+# target: "csv" | "postgres"
+target = "csv"
+directory = "./output" # used when target = "csv"
+csv_fields = [
+    "key",
+    "category",
+    "issuetype",
+    "status",
+    "resolution_date",
+    "sprint_name",
+    "assignee_name",
+    "assignee_email",
+    "creator_name",
+    "creator_email",
+    "story_points",
+    "ai_assisted_effort",
+    "ai_usage_level",
+]
+
+[postgres]
+# DSN can also be set via POSTGRES_DSN env var
+dsn = ""
+table = "jira_issues"
+schema = "public"
+upsert = true          # true = insert or update on conflict (key); false = insert only
+
+[schedule]
+enabled = false
+cron = "0 6 * * *"    # 6 AM daily; only used when enabled = true
+timezone = "UTC"
+
+[logging]
+level = "INFO"
+format = "text"        # "text" | "json"
